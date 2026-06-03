@@ -1,0 +1,192 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: OrderRepository::class)]
+#[ORM\Table(name: '`order`')]
+class Order
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $number = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $customerName = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $customerEmail = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $totalAmount = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $status = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    /**
+     * @var Collection<int, OrderDocument>
+     */
+    #[ORM\OneToMany(targetEntity: OrderDocument::class, mappedBy: 'orderId')]
+    private Collection $orderDocuments;
+
+    /**
+     * @var Collection<int, OrderStatusHistory>
+     */
+    #[ORM\OneToMany(targetEntity: OrderStatusHistory::class, mappedBy: 'orderId')]
+    private Collection $orderStatusHistories;
+
+    public function __construct()
+    {
+        $this->orderDocuments = new ArrayCollection();
+        $this->orderStatusHistories = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(string $number): static
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    public function getCustomerName(): ?string
+    {
+        return $this->customerName;
+    }
+
+    public function setCustomerName(string $customerName): static
+    {
+        $this->customerName = $customerName;
+
+        return $this;
+    }
+
+    public function getCustomerEmail(): ?string
+    {
+        return $this->customerEmail;
+    }
+
+    public function setCustomerEmail(string $customerEmail): static
+    {
+        $this->customerEmail = $customerEmail;
+
+        return $this;
+    }
+
+    public function getTotalAmount(): ?string
+    {
+        return $this->totalAmount;
+    }
+
+    public function setTotalAmount(string $totalAmount): static
+    {
+        $this->totalAmount = $totalAmount;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderDocument>
+     */
+    public function getOrderDocuments(): Collection
+    {
+        return $this->orderDocuments;
+    }
+
+    public function addOrderDocument(OrderDocument $orderDocument): static
+    {
+        if (!$this->orderDocuments->contains($orderDocument)) {
+            $this->orderDocuments->add($orderDocument);
+            $orderDocument->setOrderId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderDocument(OrderDocument $orderDocument): static
+    {
+        if ($this->orderDocuments->removeElement($orderDocument)) {
+            // set the owning side to null (unless already changed)
+            if ($orderDocument->getOrderId() === $this) {
+                $orderDocument->setOrderId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderStatusHistory>
+     */
+    public function getOrderStatusHistories(): Collection
+    {
+        return $this->orderStatusHistories;
+    }
+
+    public function addOrderStatusHistory(OrderStatusHistory $orderStatusHistory): static
+    {
+        if (!$this->orderStatusHistories->contains($orderStatusHistory)) {
+            $this->orderStatusHistories->add($orderStatusHistory);
+            $orderStatusHistory->setOrderId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderStatusHistory(OrderStatusHistory $orderStatusHistory): static
+    {
+        if ($this->orderStatusHistories->removeElement($orderStatusHistory)) {
+            // set the owning side to null (unless already changed)
+            if ($orderStatusHistory->getOrderId() === $this) {
+                $orderStatusHistory->setOrderId(null);
+            }
+        }
+
+        return $this;
+    }
+}
