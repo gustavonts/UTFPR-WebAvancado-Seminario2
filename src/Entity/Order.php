@@ -38,17 +38,18 @@ class Order
     /**
      * @var Collection<int, OrderDocument>
      */
-    #[ORM\OneToMany(targetEntity: OrderDocument::class, mappedBy: 'orderId')]
+    #[ORM\OneToMany(targetEntity: OrderDocument::class, mappedBy: 'order')]
     private Collection $orderDocuments;
 
     /**
      * @var Collection<int, OrderStatusHistory>
      */
-    #[ORM\OneToMany(targetEntity: OrderStatusHistory::class, mappedBy: 'orderId')]
+    #[ORM\OneToMany(targetEntity: OrderStatusHistory::class, mappedBy: 'order')]
     private Collection $orderStatusHistories;
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->orderDocuments = new ArrayCollection();
         $this->orderStatusHistories = new ArrayCollection();
     }
@@ -142,7 +143,7 @@ class Order
     {
         if (!$this->orderDocuments->contains($orderDocument)) {
             $this->orderDocuments->add($orderDocument);
-            $orderDocument->setOrderId($this);
+            $orderDocument->setOrder($this);
         }
 
         return $this;
@@ -151,9 +152,8 @@ class Order
     public function removeOrderDocument(OrderDocument $orderDocument): static
     {
         if ($this->orderDocuments->removeElement($orderDocument)) {
-            // set the owning side to null (unless already changed)
-            if ($orderDocument->getOrderId() === $this) {
-                $orderDocument->setOrderId(null);
+            if ($orderDocument->getOrder() === $this) {
+                $orderDocument->setOrder(null);
             }
         }
 
@@ -172,7 +172,7 @@ class Order
     {
         if (!$this->orderStatusHistories->contains($orderStatusHistory)) {
             $this->orderStatusHistories->add($orderStatusHistory);
-            $orderStatusHistory->setOrderId($this);
+            $orderStatusHistory->setOrder($this);
         }
 
         return $this;
@@ -181,9 +181,8 @@ class Order
     public function removeOrderStatusHistory(OrderStatusHistory $orderStatusHistory): static
     {
         if ($this->orderStatusHistories->removeElement($orderStatusHistory)) {
-            // set the owning side to null (unless already changed)
-            if ($orderStatusHistory->getOrderId() === $this) {
-                $orderStatusHistory->setOrderId(null);
+            if ($orderStatusHistory->getOrder() === $this) {
+                $orderStatusHistory->setOrder(null);
             }
         }
 

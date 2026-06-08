@@ -16,6 +16,9 @@ class OrderStatusHistory
     #[ORM\Column(length: 50)]
     private ?string $oldStatus = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $newStatus = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $changedAt = null;
 
@@ -23,9 +26,14 @@ class OrderStatusHistory
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
 
-    #[ORM\ManyToOne(inversedBy: 'orderStatusHistories')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $changedBy = null;
+    private ?Usuario $changedBy = null;
+
+    public function __construct()
+    {
+        $this->changedAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -44,6 +52,18 @@ class OrderStatusHistory
         return $this;
     }
 
+    public function getNewStatus(): ?string
+    {
+        return $this->newStatus;
+    }
+
+    public function setNewStatus(string $newStatus): static
+    {
+        $this->newStatus = $newStatus;
+
+        return $this;
+    }
+
     public function getChangedAt(): ?\DateTimeImmutable
     {
         return $this->changedAt;
@@ -58,7 +78,7 @@ class OrderStatusHistory
 
     public function getOrder(): ?Order
     {
-        return $this->order ;
+        return $this->order;
     }
 
     public function setOrder(?Order $order): static
@@ -68,12 +88,12 @@ class OrderStatusHistory
         return $this;
     }
 
-    public function getChangedBy(): ?User
+    public function getChangedBy(): ?Usuario
     {
         return $this->changedBy;
     }
 
-    public function setChangedBy(?User $changedBy): static
+    public function setChangedBy(?Usuario $changedBy): static
     {
         $this->changedBy = $changedBy;
 

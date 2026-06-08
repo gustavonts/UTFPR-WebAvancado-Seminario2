@@ -23,10 +23,16 @@ class OrderDocument
     private ?string $mimeType = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $UploadedAt = null;
+    private ?\DateTimeImmutable $uploadedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderDocuments')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
+
+    public function __construct()
+    {
+        $this->uploadedAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -71,12 +77,12 @@ class OrderDocument
 
     public function getUploadedAt(): ?\DateTimeImmutable
     {
-        return $this->UploadedAt;
+        return $this->uploadedAt;
     }
 
-    public function setUploadedAt(\DateTimeImmutable $UploadedAt): static
+    public function setUploadedAt(\DateTimeImmutable $uploadedAt): static
     {
-        $this->UploadedAt = $UploadedAt;
+        $this->uploadedAt = $uploadedAt;
 
         return $this;
     }

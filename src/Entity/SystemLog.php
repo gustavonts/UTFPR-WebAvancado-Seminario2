@@ -24,7 +24,13 @@ class SystemLog
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'systemLogs')]
-    private ?Usuario $user = null;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Usuario $usuario = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -67,14 +73,14 @@ class SystemLog
         return $this;
     }
 
-    public function getUser(): ?Usuario
+    public function getUsuario(): ?Usuario
     {
-        return $this->user;
+        return $this->usuario;
     }
 
-    public function setUser(?Usuario $user): static
+    public function setUsuario(?Usuario $usuario): static
     {
-        $this->user = $user;
+        $this->usuario = $usuario;
 
         return $this;
     }
