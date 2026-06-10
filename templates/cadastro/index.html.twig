@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cadastro{% endblock %}
+
+{% block body %}
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+
+    <div class="card shadow-lg border-0" style="width: 500px;">
+        <div class="card-body p-5">
+
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Criar Conta</h2>
+                <p class="text-muted">
+                    Solicite acesso ao sistema administrativo
+                </p>
+            </div>
+
+            <form method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Nome
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nome"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">
+                        Senha
+                    </label>
+
+                    <input
+                        type="password"
+                        name="senha"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-success w-100"
+                >
+                    Cadastrar
+                </button>
+
+            </form>
+
+            <hr>
+
+            <div class="text-center">
+                <a href="{{ path('app_login') }}">
+                    Já possui conta? Entrar
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
