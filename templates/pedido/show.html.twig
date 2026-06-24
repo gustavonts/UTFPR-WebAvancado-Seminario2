@@ -60,7 +60,45 @@
 
             </p>
 
+            <form 
+                method="post"
+                action="{{ path('app_pedido_status', {id: pedido.id}) }}">
 
+                <select 
+                    name="status" 
+                    class="form-select">
+
+                    <option value="AGUARDANDO_PAGAMENTO">
+                        Aguardando pagamento
+                    </option>
+
+                    <option value="PAGO">
+                        Pago
+                    </option>
+
+                    <option value="EM_TRANSPORTE">
+                        Em transporte
+                    </option>
+
+                    <option value="ENTREGUE">
+                        Entregue
+                    </option>
+
+                    <option value="CANCELADO">
+                        Cancelado
+                    </option>
+
+                </select>
+
+
+                <button 
+                    class="btn btn-success mt-2">
+
+                    Alterar status
+
+                </button>
+
+            </form>
         </div>
 
     </div>
