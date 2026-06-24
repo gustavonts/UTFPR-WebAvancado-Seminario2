@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}
+    Pedido
+{% endblock %}
+
+
+{% block body %}
+
+<div class="container mt-4">
+
+    <h1>
+        Pedido #{{ pedido.number }}
+    </h1>
+
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+
+            <h4>
+                Cliente
+            </h4>
+
+
+            <p>
+                {{ pedido.customerName }}
+            </p>
+
+
+            <p>
+                {{ pedido.customerEmail }}
+            </p>
+
+
+            <hr>
+
+
+            <h4>
+                Informações
+            </h4>
+
+
+            <p>
+                Valor:
+                <strong>
+                    R$ {{ pedido.totalAmount }}
+                </strong>
+            </p>
+
+
+            <p>
+                Status:
+
+                <span class="badge bg-primary">
+                    {{ pedido.status }}
+                </span>
+
+            </p>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
