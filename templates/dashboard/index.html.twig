@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+
+{% block body %}
+
+<div class="container mt-4">
+
+
+    <h1>
+        Dashboard
+    </h1>
+
+
+    <div class="row mt-4">
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h5>
+                        Pedidos
+                    </h5>
+
+
+                    <h2>
+                        {{ totalPedidos }}
+                    </h2>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h5>
+                        Usuários
+                    </h5>
+
+
+                    <h2>
+                        {{ usuarios }}
+                    </h2>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h5>
+                        Documentos
+                    </h5>
+
+
+                    <h2>
+                        {{ documentos }}
+                    </h2>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <hr>
+
+
+
+    <h3>
+        Status dos pedidos
+    </h3>
+
+
+
+    <ul class="list-group">
+
+
+        <li class="list-group-item">
+
+            Aguardando pagamento:
+            {{ aguardando }}
+
+        </li>
+
+
+        <li class="list-group-item">
+
+            Pagos:
+            {{ pagos }}
+
+        </li>
+
+
+        <li class="list-group-item">
+
+            Em transporte:
+            {{ transporte }}
+
+        </li>
+
+
+        <li class="list-group-item">
+
+            Entregues:
+            {{ entregues }}
+
+        </li>
+
+
+    </ul>
+
+
+</div>
+
+
+{% endblock %}
