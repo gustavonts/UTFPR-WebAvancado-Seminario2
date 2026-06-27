@@ -10,12 +10,14 @@
 
 <div class="container mt-4">
 
+
     <h1>
         Pedido #{{ pedido.number }}
     </h1>
 
 
     <div class="card shadow">
+
 
         <div class="card-body">
 
@@ -45,6 +47,7 @@
 
             <p>
                 Valor:
+
                 <strong>
                     R$ {{ pedido.totalAmount }}
                 </strong>
@@ -57,52 +60,248 @@
                 <span class="badge bg-primary">
                     {{ pedido.status }}
                 </span>
-
             </p>
 
-            <form 
-                method="post"
-                action="{{ path('app_pedido_status', {id: pedido.id}) }}">
 
-                <select 
-                    name="status" 
+
+            <form
+                method="post"
+                action="{{ path('app_pedido_status', { id: pedido.id }) }}">
+
+
+                <select
+                    name="status"
                     class="form-select">
+
 
                     <option value="AGUARDANDO_PAGAMENTO">
                         Aguardando pagamento
                     </option>
 
+
                     <option value="PAGO">
                         Pago
                     </option>
+
 
                     <option value="EM_TRANSPORTE">
                         Em transporte
                     </option>
 
+
                     <option value="ENTREGUE">
                         Entregue
                     </option>
+
 
                     <option value="CANCELADO">
                         Cancelado
                     </option>
 
+
                 </select>
 
 
-                <button 
-                    class="btn btn-success mt-2">
+                <button class="btn btn-success mt-2">
 
                     Alterar status
 
                 </button>
 
+
             </form>
+
+            <hr>
+
+            <h3>
+                Documentos
+            </h3>
+
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                action="{{ path('app_pedido_documento', { id: pedido.id }) }}">
+
+
+                <input
+                    type="file"
+                    name="documento"
+                    class="form-control">
+
+
+                <button class="btn btn-primary mt-2">
+
+                    Enviar documento
+
+                </button>
+
+
+            </form>
+
+
+            <br>
+
+
+            <ul class="list-group">
+
+
+                {% for documento in pedido.orderDocuments %}
+
+
+                    <li class="list-group-item">
+
+
+                        <a
+                            href="/uploads/{{ documento.filePath }}"
+                            target="_blank">
+
+                            {{ documento.originalName }}
+
+                        </a>
+
+
+                    </li>
+
+
+                {% else %}
+
+
+                    <li class="list-group-item">
+
+                        Nenhum documento enviado
+
+                    </li>
+
+
+                {% endfor %}
+
+
+            </ul>
+
+            <hr>
+
+
+            <h3 class="mt-4">
+                Histórico de status
+            </h3>
+
+
+
+            <table class="table table-hover shadow">
+
+
+                <thead>
+
+
+                    <tr>
+
+                        <th>
+                            Status anterior
+                        </th>
+
+                        <th>
+                            Novo status
+                        </th>
+
+                        <th>
+                            Data
+                        </th>
+
+                        <th>
+                            Usuário
+                        </th>
+
+                    </tr>
+
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    {% for historico in pedido.orderStatusHistories %}
+
+
+                        <tr>
+
+
+                            <td>
+                                {{ historico.oldStatus }}
+                            </td>
+
+
+                            <td>
+                                {{ historico.newStatus }}
+                            </td>
+
+
+                            <td>
+                                {{ historico.changedAt|date('d/m/Y H:i') }}
+                            </td>
+
+
+                            <td>
+
+
+                                {% if historico.changedBy %}
+
+                                    {{ historico.changedBy.email }}
+
+
+                                {% else %}
+
+
+                                    Sistema
+
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% else %}
+
+
+                        <tr>
+
+
+                            <td 
+                                colspan="4"
+                                class="text-center">
+
+
+                                Nenhum histórico encontrado
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
         </div>
+
 
     </div>
 
+
 </div>
+
 
 {% endblock %}

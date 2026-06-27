@@ -13,6 +13,14 @@
         Gerenciar Pedidos
     </h1>
 
+    <a 
+        href="{{ path('app_pedido_new') }}"
+        class="btn btn-success mb-3">
+
+        Novo pedido
+
+    </a>
+
 
     <table class="table table-hover shadow">
 
@@ -76,8 +84,15 @@
                         Ver
 
                     </a>
-                </td>
 
+                    <a 
+                    href="{{ path('app_pedido_delete', {id: pedido.id}) }}"
+                    class="btn btn-sm btn-danger">
+
+                        Excluir
+
+                    </a>
+                </td>
 
             </tr>
 

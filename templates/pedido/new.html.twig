@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}
+    Novo Pedido
+{% endblock %}
+
+
+{% block body %}
+
+<div class="container mt-4">
+
+
+    <div class="card shadow">
+
+
+        <div class="card-body">
+
+
+            <h1 class="mb-4">
+                Novo Pedido
+            </h1>
+
+
+            {{ form_start(form) }}
+
+
+            <div class="mb-3">
+
+                {{ form_label(form.number) }}
+
+                {{ form_widget(form.number, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Número do pedido'
+                    }
+                }) }}
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                {{ form_label(form.customerName) }}
+
+                {{ form_widget(form.customerName, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Nome do cliente'
+                    }
+                }) }}
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                {{ form_label(form.customerEmail) }}
+
+                {{ form_widget(form.customerEmail, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Email do cliente'
+                    }
+                }) }}
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                {{ form_label(form.totalAmount) }}
+
+                {{ form_widget(form.totalAmount, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Valor total'
+                    }
+                }) }}
+
+            </div>
+
+
+
+            <div class="mb-3">
+
+                {{ form_label(form.status) }}
+
+                {{ form_widget(form.status, {
+                    'attr': {
+                        'class': 'form-select'
+                    }
+                }) }}
+
+            </div>
+
+
+
+            <button class="btn btn-success">
+
+                Salvar pedido
+
+            </button>
+
+
+
+            <a 
+                href="{{ path('app_pedidos') }}"
+                class="btn btn-secondary">
+
+                Voltar
+
+            </a>
+
+
+
+            {{ form_end(form) }}
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
