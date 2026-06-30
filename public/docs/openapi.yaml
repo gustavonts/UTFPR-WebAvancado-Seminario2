@@ -1,0 +1,178 @@
+openapi: 3.0.3
+
+info:
+  title: E-commerce Administrativo
+  description: Documentação das rotas de pedidos do sistema administrativo
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+
+paths:
+  /pedidos:
+    get:
+      summary: Lista todos os pedidos
+      tags:
+        - Pedidos
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /pedidos/novo:
+    get:
+      summary: Exibe o formulário de criação de pedido
+      tags:
+        - Pedidos
+      responses:
+        '200':
+          description: Formulário de cadastro
+    post:
+      summary: Cria um novo pedido
+      tags:
+        - Pedidos
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateOrderInput'
+      responses:
+        '302':
+          description: Pedido criado com redirecionamento para a página do pedido
+
+  /pedidos/{id}:
+    get:
+      summary: Exibe os detalhes de um pedido
+      tags:
+        - Pedidos
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Detalhes do pedido
+        '404':
+          description: Pedido não encontrado
+    delete:
+      summary: Exclui um pedido
+      tags:
+        - Pedidos
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '302':
+          description: Pedido excluído com redirecionamento para a listagem
+
+  /pedidos/{id}/status:
+    post:
+      summary: Atualiza o status de um pedido
+      tags:
+        - Pedidos
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  example: PAGO
+      responses:
+        '302':
+          description: Status atualizado com redirecionamento para o pedido
+
+  /pedidos/{id}/documento:
+    post:
+      summary: Envia um documento para o pedido
+      tags:
+        - Documentos
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - documento
+              properties:
+                documento:
+                  type: string
+                  format: binary
+      responses:
+        '302':
+          description: Documento enviado com redirecionamento para o pedido
+
+  /pedidos/{id}/produto/add:
+    post:
+      summary: Adiciona um produto ao pedido
+      tags:
+        - Produtos
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - produto
+                - quantidade
+              properties:
+                produto:
+                  type: integer
+                  example: 1
+                quantidade:
+                  type: integer
+                  example: 1
+      responses:
+        '302':
+          description: Produto adicionado com redirecionamento para o pedido
+
+components:
+  parameters:
+    OrderId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    CreateOrderInput:
+      type: object
+      required:
+        - customerName
+        - customerEmail
+        - totalAmount
+        - status
+      properties:
+        customerName:
+          type: string
+          example: João Silva
+        customerEmail:
+          type: string
+          format: email
+          example: joao@email.com
+        totalAmount:
+          type: string
+          example: 199.90
+        status:
+          type: string
+          enum:
+            - AGUARDANDO_PAGAMENTO
+            - PAGO
+            - EM_TRANSPORTE
+            - ENTREGUE
+            - CANCELADO
+          example: AGUARDANDO_PAGAMENTO
