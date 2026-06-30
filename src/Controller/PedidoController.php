@@ -38,10 +38,24 @@ final class PedidoController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): Response
-    {
-
+    {   
         $novoStatus = $request->request->get('status');
+        
+        if ($novoStatus === $pedido->getStatus()) {
 
+            $this->addFlash(
+                'warning',
+                'O pedido já está com esse status.'
+            );
+
+            return $this->redirectToRoute(
+                'app_pedido_show',
+                [
+                    'id' => $pedido->getId()
+                ]
+            );
+
+        }
 
         $historico = new OrderStatusHistory();
 
@@ -109,6 +123,26 @@ final class PedidoController extends AbstractController
 
             $pedido->setCreatedAt(
                 new \DateTimeImmutable()
+            );
+
+            $ultimoPedido = $entityManager
+                ->getRepository(Order::class)
+                ->findOneBy([], ['id' => 'DESC']);
+
+
+            if ($ultimoPedido) {
+
+                $proximoNumero = (int) $ultimoPedido->getNumber() + 1;
+
+            } else {
+
+                $proximoNumero = 1;
+
+            }
+
+
+            $pedido->setNumber(
+                str_pad($proximoNumero, 6, '0', STR_PAD_LEFT)
             );
 
 

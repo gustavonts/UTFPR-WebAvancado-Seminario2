@@ -22,6 +22,7 @@ security:
 
             logout:
                 path: app_logout
+                target: app_login
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -38,9 +39,15 @@ security:
             # switch_user: true
 
     # Note: Only the *first* matching rule is applied
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+        
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/pedidos/novo, roles: ROLE_ADMIN }
+        - { path: ^/pedidos/excluir, roles: ROLE_ADMIN }
+        - { path: ^/pedidos/.*/status, roles: ROLE_ADMIN }
+        - { path: ^/pedidos/.*/documento, roles: ROLE_ADMIN }
+        - { path: ^/pedidos, roles: ROLE_USER }
         - { path: ^/usuarios, roles: ROLE_ADMIN }
 
 when@test:

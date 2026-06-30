@@ -13,7 +13,6 @@ class PedidoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('number')
             ->add('customerName')
             ->add('customerEmail')
             ->add('totalAmount')
