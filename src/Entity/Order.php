@@ -38,20 +38,36 @@ class Order
     /**
      * @var Collection<int, OrderDocument>
      */
-    #[ORM\OneToMany(targetEntity: OrderDocument::class, mappedBy: 'order')]
+    #[ORM\OneToMany(
+        targetEntity: OrderDocument::class,
+        mappedBy: 'order'
+    )]
     private Collection $orderDocuments;
 
     /**
      * @var Collection<int, OrderStatusHistory>
      */
-    #[ORM\OneToMany(targetEntity: OrderStatusHistory::class, mappedBy: 'order')]
+    #[ORM\OneToMany(
+        targetEntity: OrderStatusHistory::class,
+        mappedBy: 'order'
+    )]
     private Collection $orderStatusHistories;
+
+    /**
+     * @var Collection<int, OrderItem>
+     */
+    #[ORM\OneToMany(
+        targetEntity: OrderItem::class,
+        mappedBy: 'order'
+    )]
+    private Collection $orderItems;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->orderDocuments = new ArrayCollection();
         $this->orderStatusHistories = new ArrayCollection();
+        $this->orderItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,8 +161,7 @@ class Order
             $this->orderDocuments->add($orderDocument);
             $orderDocument->setOrder($this);
         }
-
-        return $this;
+        return this;
     }
 
     public function removeOrderDocument(OrderDocument $orderDocument): static
@@ -168,24 +183,40 @@ class Order
         return $this->orderStatusHistories;
     }
 
-    public function addOrderStatusHistory(OrderStatusHistory $orderStatusHistory): static
+    public function addOrderStatusHistory(OrderStatusHistory $history): static
     {
-        if (!$this->orderStatusHistories->contains($orderStatusHistory)) {
-            $this->orderStatusHistories->add($orderStatusHistory);
-            $orderStatusHistory->setOrder($this);
+        if (!$this->orderStatusHistories->contains($history)) {
+            $this->orderStatusHistories->add($history);
+            $history->setOrder($this);
         }
 
         return $this;
     }
 
-    public function removeOrderStatusHistory(OrderStatusHistory $orderStatusHistory): static
+    /**
+     * @return Collection<int, OrderItem>
+     */
+    public function getOrderItems(): Collection
     {
-        if ($this->orderStatusHistories->removeElement($orderStatusHistory)) {
-            if ($orderStatusHistory->getOrder() === $this) {
-                $orderStatusHistory->setOrder(null);
+        return $this->orderItems;
+    }
+
+    public function addOrderItem(OrderItem $orderItem): static
+    {
+        if (!$this->orderItems->contains($orderItem)) {
+            $this->orderItems->add($orderItem);
+            $orderItem->setOrder($this);
+        }
+        return $this;
+    }
+
+    public function removeOrderItem(OrderItem $orderItem): static
+    {
+        if ($this->orderItems->removeElement($orderItem)) {
+            if ($orderItem->getOrder() === $this) {
+                $orderItem->setOrder(null);
             }
         }
-
         return $this;
     }
 }

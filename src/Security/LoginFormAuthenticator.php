@@ -15,6 +15,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use App\Entity\Usuario;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -22,7 +25,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator,  private EntityManagerInterface $entityManager)
     {
     }
 
@@ -33,7 +36,39 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         return new Passport(
-            new UserBadge($email),
+            new UserBadge(
+                $email,
+                function ($email) {
+
+                    $usuario = $this->entityManager
+                        ->getRepository(Usuario::class)
+                        ->findOneBy([
+                            'email' => $email
+                        ]);
+                    if (!$usuario) {
+
+                        throw new CustomUserMessageAuthenticationException(
+                            'Usuário não encontrado.'
+                        );
+                    }
+
+                    if (!$usuario->isAtivo()) {
+
+                        throw new CustomUserMessageAuthenticationException(
+                            'Usuário aguardando aprovação do administrador.'
+                        );
+                    }
+
+                    if (in_array('ROLE_PENDING', $usuario->getRoles())) {
+
+                        throw new CustomUserMessageAuthenticationException(
+                            'Usuário pendente de aprovação.'
+                        );
+                    }
+
+                    return $usuario;
+                }
+            ),
             new PasswordCredentials($request->getPayload()->getString('password')),
             [
                 new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
