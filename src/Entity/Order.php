@@ -28,9 +28,6 @@ class Order
     #[ORM\Column(length: 255)]
     private ?string $customerEmail = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $totalAmount = null;
-
     #[ORM\Column(length: 50)]
     private ?string $status = null;
 
@@ -109,18 +106,6 @@ class Order
     public function setCustomerEmail(string $customerEmail): static
     {
         $this->customerEmail = $customerEmail;
-
-        return $this;
-    }
-
-    public function getTotalAmount(): ?string
-    {
-        return $this->totalAmount;
-    }
-
-    public function setTotalAmount(string $totalAmount): static
-    {
-        $this->totalAmount = $totalAmount;
 
         return $this;
     }

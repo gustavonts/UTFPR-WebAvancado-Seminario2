@@ -15,7 +15,6 @@ class PedidoType extends AbstractType
         $builder
             ->add('customerName')
             ->add('customerEmail')
-            ->add('totalAmount')
             ->add('status', ChoiceType::class, [
                 'choices' => [
 

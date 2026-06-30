@@ -42,8 +42,13 @@ final class PedidoController extends AbstractController
         }
 
         if ($data) {
-            $qb->andWhere('p.createdAt = :data')
-                ->setParameter('data', new \DateTimeImmutable($data));
+            $inicioDoDia = new \DateTimeImmutable($data . ' 00:00:00');
+            $fimDoDia = new \DateTimeImmutable($data . ' 23:59:59');
+
+            $qb->andWhere('p.createdAt >= :inicioDoDia')
+                ->andWhere('p.createdAt <= :fimDoDia')
+                ->setParameter('inicioDoDia', $inicioDoDia)
+                ->setParameter('fimDoDia', $fimDoDia);
         }
 
         $qb->orderBy('p.createdAt', 'DESC');
@@ -173,13 +178,6 @@ final class PedidoController extends AbstractController
 
             $pedido->setNumber(
                 str_pad($proximoNumero, 6, '0', STR_PAD_LEFT)
-            );
-
-            $dadosPedido = $request->request->all('pedido');
-            $valorTotalPedido = $dadosPedido['totalAmount'] ?? $request->request->get('totalAmount') ?? $pedido->getTotalAmount() ?? 0;
-
-            $pedido->setTotalAmount(
-                number_format((float) $valorTotalPedido, 2, '.', '')
             );
 
             $entityManager->persist($pedido);

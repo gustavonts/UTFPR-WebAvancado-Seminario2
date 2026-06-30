@@ -29,7 +29,9 @@ class DashboardController extends AbstractController
         $valorTotalPedidos = 0;
 
         foreach ($pedidos as $pedido) {
-            $valorTotalPedidos += (float) $pedido->getTotalAmount();
+            foreach ($pedido->getOrderItems() as $item) {
+                $valorTotalPedidos += (float) $item->getPrecoUnitario() * (int) $item->getQuantidade();
+            }
         }
 
         $aguardando = 0;
