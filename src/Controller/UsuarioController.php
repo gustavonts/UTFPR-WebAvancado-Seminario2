@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Usuario;
-use App\Entity\Order;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,17 +43,5 @@ class UsuarioController extends AbstractController
         return $this->redirectToRoute('app_usuarios');
     }
 
-    #[Route('/pedidos/{id}', name:'app_pedido_show')]
-    public function show(
-        Order $pedido
-    ): Response
-    {
-
-        return $this->render(
-            'pedido/show.html.twig',
-            [
-                'pedido'=>$pedido
-            ]
-        );
-    }
+   
 }

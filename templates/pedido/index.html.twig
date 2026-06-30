@@ -58,7 +58,11 @@
                 </td>
 
                 <td>
-                    R$ {{ pedido.totalAmount }}
+                    {% set valorTotal = 0 %}
+                    {% for item in pedido.orderItems %}
+                        {% set valorTotal = valorTotal + (item.precoUnitario * item.quantidade) %}
+                    {% endfor %}
+                    R$ {{ valorTotal|number_format(2, ',', '.') }}
                 </td>
 
                 <td>

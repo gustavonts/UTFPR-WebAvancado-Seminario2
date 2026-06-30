@@ -9,8 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\OrderRepository;
+use App\Repository\ProdutoRepository;
 use App\Form\PedidoType;
 use App\Entity\OrderDocument;
+use App\Entity\OrderItem;
+use App\Form\OrderItemType;
 
 
 final class PedidoController extends AbstractController
@@ -140,7 +143,6 @@ final class PedidoController extends AbstractController
 
             }
 
-
             $pedido->setNumber(
                 str_pad($proximoNumero, 6, '0', STR_PAD_LEFT)
             );
@@ -265,6 +267,60 @@ final class PedidoController extends AbstractController
             'app_pedido_show',
             [
                 'id' => $pedido->getId()
+            ]
+        );
+    }
+
+    #[Route('/pedidos/{id}', name:'app_pedido_show')]
+    public function show(
+        Order $pedido,
+        ProdutoRepository $produtoRepository
+    ): Response
+    {
+
+        return $this->render(
+            'pedido/show.html.twig',
+            [
+                'pedido' => $pedido,
+                'produtos' => $produtoRepository->findAll()
+            ]
+        );
+    }
+
+    #[Route('/pedidos/{id}/produto/add', name: 'app_pedido_produto_add', methods:['POST'])]
+    public function adicionarProduto(
+        Order $pedido,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ProdutoRepository $produtoRepository
+    ): Response
+    {
+        $produto = $produtoRepository->find(
+            $request->request->get('produto')
+        );
+
+        $item = new OrderItem();
+
+        $item->setOrder($pedido);
+
+        $item->setProduto($produto);
+
+        $item->setQuantidade(
+            $request->request->getInt('quantidade')
+        );
+
+        $item->setPrecoUnitario(
+            $produto->getPreco()
+        );
+
+        $entityManager->persist($item);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute(
+            'app_pedido_show',
+            [
+                'id'=>$pedido->getId()
             ]
         );
     }
