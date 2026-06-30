@@ -26,7 +26,11 @@ class DashboardController extends AbstractController
 
 
         $totalPedidos = count($pedidos);
+        $valorTotalPedidos = 0;
 
+        foreach ($pedidos as $pedido) {
+            $valorTotalPedidos += (float) $pedido->getTotalAmount();
+        }
 
         $aguardando = 0;
         $pagos = 0;
@@ -69,6 +73,7 @@ class DashboardController extends AbstractController
             [
 
                 'totalPedidos'=>$totalPedidos,
+                'valorTotalPedidos' => number_format($valorTotalPedidos, 2, ',', '.'),
 
                 'aguardando'=>$aguardando,
 

@@ -21,6 +21,32 @@
 
     </a>
 
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">Todos os status</option>
+                <option value="AGUARDANDO_PAGAMENTO" {% if filtroStatus == 'AGUARDANDO_PAGAMENTO' %}selected{% endif %}>Aguardando pagamento</option>
+                <option value="PAGO" {% if filtroStatus == 'PAGO' %}selected{% endif %}>Pago</option>
+                <option value="EM_TRANSPORTE" {% if filtroStatus == 'EM_TRANSPORTE' %}selected{% endif %}>Em transporte</option>
+                <option value="ENTREGUE" {% if filtroStatus == 'ENTREGUE' %}selected{% endif %}>Entregue</option>
+                <option value="CANCELADO" {% if filtroStatus == 'CANCELADO' %}selected{% endif %}>Cancelado</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <input type="text" name="cliente" class="form-control" placeholder="Filtrar por cliente" value="{{ filtroCliente }}">
+        </div>
+
+        <div class="col-md-3">
+            <input type="date" name="data" class="form-control" value="{{ filtroData }}">
+        </div>
+
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            <a href="{{ path('app_pedidos') }}" class="btn btn-outline-secondary">Limpar</a>
+        </div>
+    </form>
+
     <table class="table table-hover shadow">
 
         <thead>

@@ -9,6 +9,75 @@ servers:
   - url: http://localhost:8000
 
 paths:
+  /:
+    get:
+      summary: Página inicial do dashboard
+      tags:
+        - Dashboard
+      responses:
+        '200':
+          description: Dashboard renderizado
+
+  /cadastro:
+    get:
+      summary: Exibe o formulário de cadastro
+      tags:
+        - Cadastro
+      responses:
+        '200':
+          description: Formulário de cadastro
+    post:
+      summary: Cadastra um novo usuário
+      tags:
+        - Cadastro
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CadastroInput'
+      responses:
+        '302':
+          description: Cadastro realizado com redirecionamento para o login
+
+  /login:
+    get:
+      summary: Exibe o formulário de login
+      tags:
+        - Autenticação
+      responses:
+        '200':
+          description: Formulário de login
+
+  /logout:
+    get:
+      summary: Finaliza a sessão do usuário
+      tags:
+        - Autenticação
+      responses:
+        '302':
+          description: Logout realizado
+
+  /usuarios:
+    get:
+      summary: Lista todos os usuários
+      tags:
+        - Usuários
+      responses:
+        '200':
+          description: Lista de usuários
+
+  /usuarios/{id}/aprovar:
+    post:
+      summary: Aprova um usuário pendente
+      tags:
+        - Usuários
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '302':
+          description: Usuário aprovado com redirecionamento para a listagem
+
   /pedidos:
     get:
       summary: Lista todos os pedidos
@@ -148,6 +217,13 @@ components:
       schema:
         type: integer
 
+    UserId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
   schemas:
     CreateOrderInput:
       type: object
@@ -176,3 +252,22 @@ components:
             - ENTREGUE
             - CANCELADO
           example: AGUARDANDO_PAGAMENTO
+
+    CadastroInput:
+      type: object
+      required:
+        - nome
+        - email
+        - senha
+      properties:
+        nome:
+          type: string
+          example: Maria Souza
+        email:
+          type: string
+          format: email
+          example: maria@email.com
+        senha:
+          type: string
+          format: password
+          example: 123456

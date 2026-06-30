@@ -20,17 +20,44 @@ final class PedidoController extends AbstractController
 {
     #[Route('/pedidos', name:'app_pedidos')]
     public function index(
+        Request $request,
         OrderRepository $repository
     ): Response
     {
 
-        $pedidos = $repository->findAll();
+        $status = $request->query->get('status');
+        $cliente = $request->query->get('cliente');
+        $data = $request->query->get('data');
+
+        $qb = $repository->createQueryBuilder('p');
+
+        if ($status) {
+            $qb->andWhere('p.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        if ($cliente) {
+            $qb->andWhere('LOWER(p.customerName) LIKE :cliente')
+                ->setParameter('cliente', '%' . strtolower($cliente) . '%');
+        }
+
+        if ($data) {
+            $qb->andWhere('p.createdAt = :data')
+                ->setParameter('data', new \DateTimeImmutable($data));
+        }
+
+        $qb->orderBy('p.createdAt', 'DESC');
+
+        $pedidos = $qb->getQuery()->getResult();
 
 
         return $this->render(
             'pedido/index.html.twig',
             [
-                'pedidos'=>$pedidos
+                'pedidos' => $pedidos,
+                'filtroStatus' => $status,
+                'filtroCliente' => $cliente,
+                'filtroData' => $data
             ]
         );
     }
@@ -105,7 +132,8 @@ final class PedidoController extends AbstractController
     #[Route('/pedidos/novo', name: 'app_pedido_new')]
     public function new(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ProdutoRepository $produtoRepository
     ): Response
     {
 
@@ -147,11 +175,38 @@ final class PedidoController extends AbstractController
                 str_pad($proximoNumero, 6, '0', STR_PAD_LEFT)
             );
 
+            $dadosPedido = $request->request->all('pedido');
+            $valorTotalPedido = $dadosPedido['totalAmount'] ?? $request->request->get('totalAmount') ?? $pedido->getTotalAmount() ?? 0;
+
+            $pedido->setTotalAmount(
+                number_format((float) $valorTotalPedido, 2, '.', '')
+            );
 
             $entityManager->persist($pedido);
 
             $entityManager->flush();
 
+            $itensSelecionados = json_decode($request->request->get('itens', '[]'), true);
+
+            if (is_array($itensSelecionados)) {
+                foreach ($itensSelecionados as $itemSelecionado) {
+                    $produto = $produtoRepository->find($itemSelecionado['produto'] ?? null);
+
+                    if (!$produto) {
+                        continue;
+                    }
+
+                    $item = new OrderItem();
+                    $item->setOrder($pedido);
+                    $item->setProduto($produto);
+                    $item->setQuantidade((int) ($itemSelecionado['quantidade'] ?? 1));
+                    $item->setPrecoUnitario((string) $produto->getPreco());
+
+                    $entityManager->persist($item);
+                }
+
+                $entityManager->flush();
+            }
 
             return $this->redirectToRoute(
                 'app_pedido_show',
@@ -165,7 +220,8 @@ final class PedidoController extends AbstractController
         return $this->render(
             'pedido/new.html.twig',
             [
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'produtos' => $produtoRepository->findAll()
             ]
         );
     }

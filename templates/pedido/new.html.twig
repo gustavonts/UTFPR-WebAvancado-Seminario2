@@ -45,16 +45,46 @@
             </div>
 
             <div class="mb-3">
+                <label class="form-label">
+                    Produtos
+                </label>
 
-                {{ form_label(form.totalAmount) }}
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-7">
+                        <select id="produto-select" class="form-select">
+                            {% for produto in produtos %}
+                                <option value="{{ produto.id }}" data-nome="{{ produto.nome }}" data-preco="{{ produto.preco }}">
+                                    {{ produto.nome }} - R$ {{ produto.preco }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
+                    <div class="col-md-3">
+                        <input id="quantidade-input" type="number" class="form-control" value="1" min="1">
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="button" id="adicionar-produto" class="btn btn-outline-primary w-100">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+
+                <ul id="lista-produtos" class="list-group mt-3"></ul>
+
+                <div id="totalizador" class="alert alert-info mt-3 mb-0">
+                    Total: R$ 0,00
+                </div>
+
+                <input type="hidden" name="itens" id="itens-selecionados" value="[]">
                 {{ form_widget(form.totalAmount, {
                     'attr': {
-                        'class': 'form-control',
-                        'placeholder': 'Valor total'
+                        'id': 'total-amount',
+                        'class': 'd-none',
+                        'value': '0.00'
                     }
                 }) }}
-
             </div>
 
             <div class="mb-3">
@@ -79,7 +109,8 @@
                 Voltar
             </a>
 
-            {{ form_end(form) }}
+            {{ form_widget(form._token) }}
+            {{ form_end(form, {'render_rest': false}) }}
 
         </div>
 
@@ -87,4 +118,73 @@
 
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectProduto = document.getElementById('produto-select');
+            const inputQuantidade = document.getElementById('quantidade-input');
+            const botaoAdicionar = document.getElementById('adicionar-produto');
+            const listaProdutos = document.getElementById('lista-produtos');
+            const totalizador = document.getElementById('totalizador');
+            const hiddenItens = document.getElementById('itens-selecionados');
+            const hiddenTotal = document.getElementById('total-amount');
+            const itensSelecionados = [];
+
+            function atualizarResumo() {
+                listaProdutos.innerHTML = '';
+
+                let total = 0;
+
+                itensSelecionados.forEach(function (item, index) {
+                    total += item.preco * item.quantidade;
+
+                    const itemLi = document.createElement('li');
+                    itemLi.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    itemLi.innerHTML = '<span>' + item.nome + '</span><span class="badge bg-primary rounded-pill">Qtd: ' + item.quantidade + '</span>';
+
+                    const removerButton = document.createElement('button');
+                    removerButton.type = 'button';
+                    removerButton.className = 'btn btn-sm btn-outline-danger';
+                    removerButton.textContent = 'Remover';
+                    removerButton.addEventListener('click', function () {
+                        itensSelecionados.splice(index, 1);
+                        atualizarResumo();
+                    });
+
+                    itemLi.appendChild(removerButton);
+                    listaProdutos.appendChild(itemLi);
+                });
+
+                totalizador.textContent = 'Total: R$ ' + total.toFixed(2).replace('.', ',');
+                hiddenItens.value = JSON.stringify(itensSelecionados);
+                hiddenTotal.value = total.toFixed(2);
+            }
+
+            botaoAdicionar.addEventListener('click', function () {
+                const produtoSelecionado = selectProduto.options[selectProduto.selectedIndex];
+                const produtoId = produtoSelecionado.value;
+                const nome = produtoSelecionado.dataset.nome;
+                const preco = parseFloat(produtoSelecionado.dataset.preco || 0);
+                const quantidade = parseInt(inputQuantidade.value || 1, 10);
+
+                if (!produtoId) {
+                    return;
+                }
+
+                itensSelecionados.push({
+                    produto: produtoId,
+                    nome: nome,
+                    preco: preco,
+                    quantidade: quantidade
+                });
+
+                atualizarResumo();
+            });
+
+            atualizarResumo();
+        });
+    </script>
 {% endblock %}
