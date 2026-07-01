@@ -14,6 +14,7 @@ use App\Form\PedidoType;
 use App\Entity\OrderDocument;
 use App\Entity\OrderItem;
 use App\Form\OrderItemType;
+use App\Service\MailService;
 
 
 final class PedidoController extends AbstractController
@@ -71,7 +72,8 @@ final class PedidoController extends AbstractController
     public function status(
         Order $pedido,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MailService $mailService
     ): Response
     {   
         $novoStatus = $request->request->get('status');
@@ -125,6 +127,13 @@ final class PedidoController extends AbstractController
 
         $entityManager->flush();
 
+        $destinatario = $pedido->getCustomerEmail() ?? 'noreply@ecommerce.com';
+
+        $mailService->sendStatusUpdate(
+            $destinatario,
+            $novoStatus,
+            $pedido->getId()
+        );
 
         return $this->redirectToRoute(
             'app_pedido_show',

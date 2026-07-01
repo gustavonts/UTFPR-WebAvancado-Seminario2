@@ -78,13 +78,7 @@
                 </div>
 
                 <input type="hidden" name="itens" id="itens-selecionados" value="[]">
-                {{ form_widget(form.totalAmount, {
-                    'attr': {
-                        'id': 'total-amount',
-                        'class': 'd-none',
-                        'value': '0.00'
-                    }
-                }) }}
+                <input type="hidden" name="totalAmount" id="total-amount" value="0.00">
             </div>
 
             <div class="mb-3">
