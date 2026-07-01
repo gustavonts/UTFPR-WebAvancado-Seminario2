@@ -8,5 +8,5 @@
 /public/uploads/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
 .env
+###< symfony/framework-bundle ###
