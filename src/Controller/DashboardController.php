@@ -38,37 +38,35 @@ class DashboardController extends AbstractController
         $pagos = 0;
         $transporte = 0;
         $entregues = 0;
-
+        $cancelados = 0;
 
         foreach ($pedidos as $pedido) {
 
-
             switch ($pedido->getStatus()) {
-
 
                 case 'AGUARDANDO_PAGAMENTO':
                     $aguardando++;
                     break;
 
-
                 case 'PAGO':
                     $pagos++;
                     break;
-
 
                 case 'EM_TRANSPORTE':
                     $transporte++;
                     break;
 
-
                 case 'ENTREGUE':
                     $entregues++;
+                    break;
+
+                case 'CANCELADO':
+                    $cancelados++;
                     break;
 
             }
 
         }
-
 
         return $this->render(
             'dashboard/index.html.twig',
@@ -84,6 +82,8 @@ class DashboardController extends AbstractController
                 'transporte'=>$transporte,
 
                 'entregues'=>$entregues,
+
+                'cancelados'=>$cancelados,
 
                 'usuarios'=>count(
                     $usuarioRepository->findAll()

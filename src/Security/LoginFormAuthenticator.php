@@ -62,7 +62,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
                     if (in_array('ROLE_PENDING', $usuario->getRoles())) {
 
                         throw new CustomUserMessageAuthenticationException(
-                            'Usuário pendente de aprovação.'
+                            'Usuário pendente de aprovação do administrador.'
                         );
                     }
 

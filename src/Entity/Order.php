@@ -39,7 +39,9 @@ class Order
      */
     #[ORM\OneToMany(
         targetEntity: OrderDocument::class,
-        mappedBy: 'order'
+        mappedBy: 'order',
+        cascade: ['remove'],
+        orphanRemoval: true
     )]
     private Collection $orderDocuments;
 
@@ -48,7 +50,9 @@ class Order
      */
     #[ORM\OneToMany(
         targetEntity: OrderStatusHistory::class,
-        mappedBy: 'order'
+        mappedBy: 'order',
+        cascade: ['remove'],
+        orphanRemoval: true
     )]
     private Collection $orderStatusHistories;
 
@@ -57,7 +61,9 @@ class Order
      */
     #[ORM\OneToMany(
         targetEntity: OrderItem::class,
-        mappedBy: 'order'
+        mappedBy: 'order',
+        cascade: ['remove'],
+        orphanRemoval: true
     )]
     private Collection $orderItems;
 

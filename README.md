@@ -40,7 +40,6 @@ A aplicação permite:
 
 - PHP 8.4+
 - Composer
-- Docker e Docker Compose (opcional, mas recomendado para o banco e o Mailpit)
 
 ## Configuração local
 
@@ -58,19 +57,15 @@ Exemplo de configuração para PostgreSQL:
 DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5432/webavancado?serverVersion=17&charset=utf8"
 ```
 
-3. Suba o banco e o serviço de e-mail:
-
-```bash
-docker compose up -d database mailer
 ```
 
-4. Execute as migrações:
+3. Execute as migrações:
 
 ```bash
 php bin/console doctrine:migrations:migrate
 ```
 
-5. Inicie a aplicação:
+4. Inicie a aplicação:
 
 ```bash
 php -S 127.0.0.1:8000 -t public

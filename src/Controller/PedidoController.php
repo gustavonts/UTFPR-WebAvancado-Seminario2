@@ -132,7 +132,7 @@ final class PedidoController extends AbstractController
         $mailService->sendStatusUpdate(
             $destinatario,
             $novoStatus,
-            $pedido->getId()
+            $pedido->getNumber()
         );
 
         return $this->redirectToRoute(
